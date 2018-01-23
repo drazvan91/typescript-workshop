@@ -20,7 +20,7 @@ let myTriple: [string, string, number] = ['boy', 'girl', 10];
 enum Color { Red =3, Blue, Yellow };
 let color: Color = Color.Blue;
 
-// any, void, never
+// any, void, neverts
 let anything: any = 3;
 anything='ceva';
 

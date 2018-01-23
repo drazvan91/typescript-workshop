@@ -14,48 +14,149 @@ export class CustomizedDoor implements Door {
     }
 }
 
-class CustomizedDoorBuilder {
-    private width: number;
-    private height: number;
-    private color: string;
-    private durability: number;
-    private coolFeature: boolean;
+namespace Problem1 {
+    let door: CustomizedDoor;
+    door = new CustomizedDoor(1,2);
+    door.color = "red";
+    door.durability = 1;
+    door.coolFeature = true;
+    // 1. here might be a lot of assignments
+    // 2. what about default values?
+}
+
+namespace Problem2 {
+    class CustomizedDoorFactory {
+        make(width: number, height: number, color?: string, durability?: number, coolFeature?: boolean): Door {
+            let door: CustomizedDoor;
+            door = new CustomizedDoor(1,2);
+            door.color = "red";
+            door.durability = 1;
+            door.coolFeature = true;
+            return door;
+        }
+    }
+
+    let factory = new CustomizedDoorFactory();
+    let door = factory.make(1,2,"red");
+}
+
+namespace Solution {
+    class CustomizedDoorBuilder {
+        private width: number;
+        private height: number;
+        private color: string;
+        private durability: number;
+        private coolFeature: boolean;
+        
+        constructor(width: number, height: number){
+            this.width = width;
+            this.height = height;
+        }
     
-    constructor(width: number, height: number){
-        this.width = width;
-        this.height = height;
+        withColor(color: string): CustomizedDoorBuilder{
+            this.color = color;
+            return this;
+        }
+    
+        withDurability(durability: number): CustomizedDoorBuilder {
+            this.durability = durability;
+            return this;
+        }
+    
+        withCoolFeature(value: boolean): CustomizedDoorBuilder{
+            this.coolFeature = value;
+            return this;
+        }
+    
+        build(): CustomizedDoor{
+            let door = new CustomizedDoor(this.width, this.height);
+            door.color = this.color;
+            door.durability = this.durability;
+            door.coolFeature = this.coolFeature;
+            return door;
+        }
     }
 
-    withColor(color: string): CustomizedDoorBuilder{
-        this.color = color;
-        return this;
-    }
+    export function run(){
+        var door = new CustomizedDoorBuilder(4,5)
+            .withColor("red")
+            .withCoolFeature(true)
+            .withDurability(10)
+            .build();
 
-    withDurability(durability: number): CustomizedDoorBuilder {
-        this.durability = durability;
-        return this;
-    }
-
-    withCoolFeature(value: boolean): CustomizedDoorBuilder{
-        this.coolFeature = value;
-        return this;
-    }
-
-    build(): CustomizedDoor{
-        let door = new CustomizedDoor(this.width, this.height);
-        door.color = this.color;
-        door.durability = this.durability;
-        door.coolFeature = this.coolFeature;
-        return door;
+        door.printDescription();
     }
 }
 
-console.log('---------------- 4 builder ----------------');
+Solution.run();
 
-var doorBuilder = new CustomizedDoorBuilder(4,5);
-doorBuilder.withColor("red");
-doorBuilder.withCoolFeature(true);
-doorBuilder.withDurability(10);
-var door = doorBuilder.build();
+namespace AdvantageOfBuilder {
+    export class ColoredDoor implements Door {
+        color: string;
+        
+        constructor(public width: number, public height: number){}
+    
+        printDescription(): void {
+            console.log("This is a colored door. width=%s, height=%s, color=%s", 
+                this.width, this.height, this.color,)
+        }
+    }
 
-door.printDescription();
+    class DoorBuilder {
+        private width: number;
+        private height: number;
+        private color: string | null;
+        private durability: number | null;
+        private coolFeature: boolean | null;
+        
+        constructor(width: number, height: number){
+            this.width = width;
+            this.height = height;
+        }
+    
+        withColor(color: string): DoorBuilder{
+            this.color = color;
+            return this;
+        }
+    
+        withDurability(durability: number): DoorBuilder {
+            this.durability = durability;
+            return this;
+        }
+    
+        withCoolFeature(value: boolean): DoorBuilder{
+            this.coolFeature = value;
+            return this;
+        }
+    
+        build(): Door {
+            if(this.durability != null || this.coolFeature != null){
+                let door = new CustomizedDoor(this.width, this.height);
+                door.color = this.color;
+                door.durability = this.durability;
+                door.coolFeature = this.coolFeature;
+                return door;
+            } else if (this.color != null) {
+                let door = new ColoredDoor(this.width, this.height);
+                door.color = this.color;
+                return door;
+            } else{
+                return  <Door>{ 
+                    width: this.width,
+                    height: this.height
+                };
+            }
+        }
+    }
+
+    export function run(){
+        var door = new DoorBuilder(4,5)
+            .withColor("red")
+            .withCoolFeature(true)
+            .withDurability(10)
+            .build();
+
+        door.printDescription();
+    }
+}
+

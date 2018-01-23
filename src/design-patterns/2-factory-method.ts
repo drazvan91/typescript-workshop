@@ -1,4 +1,25 @@
-import { Door, WoodenDoor, SteelDoor } from './1-simple-factory';
+import { Door, WoodenDoor, IronDoor } from './1-simple-factory';
+
+namespace Problem {
+    class WoodenDoorInstaller {
+        installDoor(width: number, height: number): void{
+            let door = new WoodenDoor(width, height);
+
+            console.log("hey, i will install this door: ");
+            door.printDescription();
+        }
+        
+    }
+
+    class SteelDoorInstaller {
+        installDoor(width: number, height: number): void{
+            let door = new IronDoor(width, height);
+            
+            console.log("hey, i will install this door: ");
+            door.printDescription();
+        }
+    }
+}
 
 abstract class DoorInstaller {
     protected abstract buyDoor(width: number, height: number): Door;  // this is the factory method
@@ -19,7 +40,7 @@ class WoodenDoorInstaller extends DoorInstaller {
 
 class SteelDoorInstaller extends DoorInstaller {
     protected buyDoor(width: number, height: number): Door {
-        return new SteelDoor(width, height);
+        return new IronDoor(width, height);
     }
 }
 

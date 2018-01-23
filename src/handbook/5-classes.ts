@@ -112,10 +112,10 @@ var child = new Child("ion", 3);
 
 // readonly sugar
 class Mouse {
-    constructor(public readonly name: string){}
+    constructor(public readonly fullName: string){}
 
     do(){
-        this.name = 'ok';
+        this.fullName = 'ok';
     }
 }
 
